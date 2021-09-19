@@ -1,0 +1,5 @@
+*.ipynb
+*.iml
+*.html
+*.xml
+.idea
