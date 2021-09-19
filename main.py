@@ -9,7 +9,7 @@ from lab_01 import polynomial_interpolation
 st.sidebar.image('logo.png', width=300)
 
 
-def header():  # TODO add repo
+def header():
     author = """
         made by [Kosarevsky Dmitry](https://github.com/dKosarevsky) 
         for Modelling [labs](https://github.com/dKosarevsky/)
