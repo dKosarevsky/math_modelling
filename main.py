@@ -12,7 +12,7 @@ st.sidebar.image('logo.png', width=300)
 def header():
     author = """
         made by [Kosarevsky Dmitry](https://github.com/dKosarevsky) 
-        for Modelling [labs](https://github.com/dKosarevsky/)
+        for [Modelling](https://github.com/dKosarevsky/iu7/blob/master/7sem/modeling.md) labs
         in [BMSTU](https://bmstu.ru)
     """
     st.markdown("# МГТУ им. Баумана. Кафедра ИУ7")
