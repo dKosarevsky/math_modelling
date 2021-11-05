@@ -1,5 +1,5 @@
 # Streamlit
-streamlit==1.0.0  # https://streamlit.io/
+streamlit==1.1.0  # https://streamlit.io/
 streamlit-aggrid==0.2  # https://pypi.org/project/streamlit-aggrid/
 
 # data organisation and analysis
