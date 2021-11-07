@@ -1,10 +1,8 @@
 import streamlit as st
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
 
 from lab_01 import polynomial_interpolation
 from lab_02 import numerical_integration
+from lab_03 import numerical_differentiation
 
 # st.set_page_config(initial_sidebar_state="collapsed")
 st.sidebar.image('logo.png', width=300)
@@ -32,7 +30,7 @@ def main():
             "3. Численное дифференцирование.",
             "4. Модели на основе ОДУ второго порядка с краевыми условиями II и III рода.",
         ),
-        index=1
+        index=2
     )
 
     if lab[:1] == "1":
@@ -41,9 +39,9 @@ def main():
     elif lab[:1] == "2":
         numerical_integration.main()
 
-    # elif lab[:1] == "3":
-    #     _.main()
-    #
+    elif lab[:1] == "3":
+        numerical_differentiation.main()
+
     # elif lab[:1] == "4":
     #     _.main()
 
