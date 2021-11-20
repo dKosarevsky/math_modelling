@@ -49,7 +49,7 @@ def main():
     st.markdown("""**Цель работы:** 
     Получение навыков построения алгоритма вычисления производных от сеточных функций.""")
 
-    task = r"""
+    formula = r"""
     $$
     y = \frac{a_0x}{a_1 + a_2x}
     $$
@@ -57,7 +57,7 @@ def main():
     st.markdown("""**Задание:** 
         Задана табличная (сеточная) функция.
         Имеется информация, что закономерность представленная таблицей, может быть описана формулой""")
-    st.write(task)
+    st.write(formula)
     st.write("Параметры функции:")
 
     a1, a2, a3 = st.columns(3)
@@ -74,12 +74,12 @@ def main():
     x5 = e1.number_input("x₅", min_value=1, max_value=10, value=5, step=1)
     x6 = f1.number_input("x₆", min_value=1, max_value=10, value=6, step=1)
 
-    y1 = a2.number_input("y₁:", min_value=.001, max_value=10., value=.571, format="%.3f")
-    y2 = b2.number_input("y₂", min_value=.001, max_value=10., value=.889, format="%.3f")
-    y3 = c2.number_input("y₃", min_value=.001, max_value=10., value=1.091, format="%.3f")
-    y4 = d2.number_input("y₄", min_value=.001, max_value=10., value=1.231, format="%.3f")
-    y5 = e2.number_input("y₅", min_value=.001, max_value=10., value=1.333, format="%.3f")
-    y6 = f2.number_input("y₆", min_value=.001, max_value=10., value=1.412, format="%.3f")
+    y1 = a2.number_input("y₁:", min_value=.001, max_value=10., value=.571, format="%.4f")
+    y2 = b2.number_input("y₂", min_value=.001, max_value=10., value=.889, format="%.4f")
+    y3 = c2.number_input("y₃", min_value=.001, max_value=10., value=1.091, format="%.4f")
+    y4 = d2.number_input("y₄", min_value=.001, max_value=10., value=1.231, format="%.4f")
+    y5 = e2.number_input("y₅", min_value=.001, max_value=10., value=1.333, format="%.4f")
+    y6 = f2.number_input("y₆", min_value=.001, max_value=10., value=1.412, format="%.4f")
 
     h = a3.number_input("h:", min_value=1, max_value=10, value=1, step=1)
 
@@ -99,7 +99,7 @@ def main():
         "4": [alignment_variables(ln, x_array_len, y_array, x_array) for ln in x_array_range],
         "5": [second_derivative(ln, x_array_len, y_array, h) for ln in x_array_range],
     }
-    result = pd.DataFrame(data=result_data).applymap("{0:.3f}".format)
+    result = pd.DataFrame(data=result_data).applymap("{0:.4f}".format)
     st.table(result.assign(hack="").set_index("hack"))
 
     st.write("Легенда для столбцов 1-5:")
