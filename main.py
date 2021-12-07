@@ -3,6 +3,7 @@ import streamlit as st
 from lab_01 import polynomial_interpolation
 from lab_02 import numerical_integration
 from lab_03 import numerical_differentiation
+from lab_04 import differentiation_boundary
 
 # st.set_page_config(initial_sidebar_state="collapsed")
 st.sidebar.image('logo.png', width=300)
@@ -30,7 +31,7 @@ def main():
             "3. Численное дифференцирование.",
             "4. Модели на основе ОДУ второго порядка с краевыми условиями II и III рода.",
         ),
-        index=2
+        index=3
     )
 
     if lab[:1] == "1":
@@ -42,8 +43,8 @@ def main():
     elif lab[:1] == "3":
         numerical_differentiation.main()
 
-    # elif lab[:1] == "4":
-    #     _.main()
+    elif lab[:1] == "4":
+        differentiation_boundary.main()
 
 
 if __name__ == "__main__":
