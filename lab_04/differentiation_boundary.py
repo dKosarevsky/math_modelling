@@ -97,15 +97,15 @@ def main():
     c1, c2, c3 = st.columns(3)
     d1, d2, d3 = st.columns(3)
 
-    k_0 = a1.number_input("k₀", min_value=0., max_value=1., value=.4)
-    k_n = b1.number_input("kₙ", min_value=0., max_value=1., value=.1)
-    alpha_0 = c1.number_input("α₀", min_value=0., max_value=1., value=.05)
-    alpha_n = d1.number_input("αₙ", min_value=0., max_value=1., value=.01)
+    k_0 = a1.number_input("k₀ (Вт/см К):", min_value=0., max_value=1., value=.4)
+    k_n = b1.number_input("kₙ (Вт/см К):", min_value=0., max_value=1., value=.1)
+    alpha_0 = c1.number_input("α₀ (Вт/см² К):", min_value=0., max_value=1., value=.05)
+    alpha_n = d1.number_input("αₙ (Вт/см² К):", min_value=0., max_value=1., value=.01)
 
-    l = a2.number_input("l:", min_value=1, max_value=100, value=10)
-    T_0 = b2.number_input("T₀", min_value=1, max_value=1000, value=300)
-    R = c2.number_input("R", min_value=0., max_value=1., value=.5)
-    F_0 = d2.number_input("F₀", min_value=0, max_value=10, value=0)
+    l = a2.number_input("l (см):", min_value=1, max_value=100, value=10)
+    T_0 = b2.number_input("T₀ (К):", min_value=1, max_value=1000, value=300)
+    R = c2.number_input("R (см):", min_value=0., max_value=1., value=.5)
+    F_0 = d2.number_input("F₀ (Вт/см²):", min_value=0, max_value=10, value=0)
 
     h = a3.number_input("h:", min_value=.00001, max_value=1., value=.0001, format="%.5f")
 
