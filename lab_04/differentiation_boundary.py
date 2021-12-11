@@ -105,7 +105,7 @@ def main():
     l = a2.number_input("l (см):", min_value=1, max_value=100, value=10)
     T_0 = b2.number_input("T₀ (К):", min_value=1, max_value=1000, value=300)
     R = c2.number_input("R (см):", min_value=0., max_value=1., value=.5)
-    F_0 = d2.number_input("F₀ (Вт/см²):", min_value=0, max_value=10, value=0)
+    F_0 = d2.number_input("F₀ (Вт/см²):", min_value=0, max_value=100, value=50)
 
     h = a3.number_input("h:", min_value=.00001, max_value=1., value=.0001, format="%.5f")
 
