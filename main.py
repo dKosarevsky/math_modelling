@@ -16,8 +16,8 @@ def header():
         for [Modelling](https://github.com/dKosarevsky/iu7/blob/master/7sem/modeling.md) labs
         in [BMSTU](https://bmstu.ru)
     """
-    st.markdown("# МГТУ им. Баумана. Кафедра ИУ7")
-    st.markdown("## Моделирование")
+    st.header("МГТУ им. Баумана. Кафедра ИУ7")
+    st.markdown("**Курс:** Моделирование")
     st.markdown("**Преподаватель:** Градов В.М.")
     st.markdown("**Студент:** Косаревский Д.П.")
     st.sidebar.markdown(author)
