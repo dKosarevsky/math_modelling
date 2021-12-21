@@ -54,34 +54,35 @@ def generate_random(a, b, num_samples):
 
 
 def calculate_average(list_, num_samples, func):
-    sum_ = 0;
+    sum_ = 0
     for i in range(0, num_samples):
         sum_ += func(list_[i])
 
     return sum_ / num_samples
 
 
-def run(a, b, num_samples, func):
-    list_ = generate_random(a, b, num_samples)
+def calculate(a, b, num_samples, func):
+    list_random_uniform_nums = generate_random(a, b, num_samples)
+    average = calculate_average(list_random_uniform_nums, num_samples, func)
+    integral = (b - a) * average
 
-    average = calculate_average(list_, num_samples, func)
-
-    integral_ = (b - a) * average
-
-    st.write(f"{integral_}")
-
-    return integral_
+    return integral
 
 
-def integral(a, b, num_samples, num_iter, func):
+def calculate_integral(a, b, num_samples, num_iter, func):
     avg_sum = 0
+    areas = []
     for i in range(0, num_iter):
-        avg_sum += run(a, b, num_samples, func)
+        integral = calculate(a, b, num_samples, func)
+        avg_sum += integral
+        areas.append(integral)
     avg_integral = avg_sum / num_iter
-    st.write(f"""
+    st.markdown(f"""
         Интеграл функции {func.__doc__} на интервале от {a} до {b} 
-        с использованием {num_samples} примеров и {num_iter} итераций равен: {avg_integral}
+        с использованием {num_samples} примеров и {num_iter} итераций равен: **{avg_integral}**
     """)
+
+    return areas
 
 
 def main():
@@ -149,7 +150,7 @@ def main():
     precision = c4.number_input("Введите точность:", value=.1, format="%.8f")
     epsilon = c5.number_input("Введите эпсилон (ε):", min_value=.00000000001, value=1.0 * (10 ** - 8), format="%.8f")
     num_samples = c6.number_input("Введите количество примеров:", min_value=1, max_value=10, value=5, step=1)
-    num_iterations = c7.number_input("Введите количество итераций:", min_value=1, max_value=10000, value=100, step=1)
+    num_iterations = c7.number_input("Введите количество итераций:", min_value=1, max_value=100000, value=1000, step=1)
 
     st.markdown("---")
     # calc_type = st.radio(
@@ -165,16 +166,27 @@ def main():
     #     st.write(calc_type[3:])
 
     if abs(a % np.pi) < epsilon:
-        a = int(a/np.pi) * np.pi
+        a = int(a / np.pi) * np.pi
     elif abs(a % np.e) < epsilon:
-        a = int(a/np.e) * np.e
+        a = int(a / np.e) * np.e
     if abs(b % np.pi) < epsilon:
-        b = int(b/np.pi) * np.pi
+        b = int(b / np.pi) * np.pi
     elif abs(b % np.e) < epsilon:
-        b = int(b/np.e) * np.e
+        b = int(b / np.e) * np.e
 
-    st.write(f"Вычисление интеграла функции {function.__doc__}:")
-    integral(a, b, num_samples, num_iterations, function)
+    all_areas = calculate_integral(a, b, num_samples, num_iterations, function)
+
+    show_areas = st.checkbox("Показать подробные результаты вычислений")
+    if show_areas:
+        st.code(all_areas)
+
+    fig = px.histogram(
+        all_areas,
+        opacity=0.85,
+        marginal="box",
+        title="Распределение рассчитанных интегралов(площадей)",
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
 
 if __name__ == "__main__":
