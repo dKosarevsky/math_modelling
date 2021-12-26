@@ -23,6 +23,11 @@ def equation_2(x):
     return 1 / (3 * np.cos(x) + 2)
 
 
+def equation_e(x):
+    """f(x) = x * e^(-x)"""
+    return x * np.e ** -x
+
+
 def equation_3(x, y):
     """f(x, y) = 4 + 2y + 2x + xy + x³y"""
     return 4 + 2 * y + 2 * x + x * y + x ** 3 * y
@@ -190,8 +195,8 @@ def main():
 
     description = """
     Пусть интеграл (a, b, f (x)) представляет собой интеграл от a до b функции f (x) по x
-    Пусть avg (f (x), a, b) представляет собой среднее значение функции на отрезке a, b
-    Используя вторую фундаментальную теорему исчисления avg (f (x), a, b) = 1 (b-a) интеграл (a, b, f (x))
+    Пусть среднее (f (x), a, b) представляет собой среднее значение функции на отрезке a, b
+    Используя вторую фундаментальную теорему исчисления среднее (f (x), a, b) = 1 (b-a) интеграл (a, b, f (x))
     преобразовывая функцию, указанную во второй фундаментальной теореме исчисления
     мы получаем (b-a) avg (f (x), a, b) = интеграл (a, b, f (x))
     
@@ -230,6 +235,7 @@ def main():
             f"0. {equation_0.__doc__}",
             f"1. {equation_1.__doc__}",
             f"2. {equation_2.__doc__}",
+            f"3. {equation_e.__doc__}",
         ))
 
         if selected_fun[:1] == "1":
@@ -238,6 +244,8 @@ def main():
             function = equation_2
         elif selected_fun[:1] == "0":
             function = equation_0
+        elif selected_fun[:1] == "3":
+            function = equation_e
 
         st.markdown("---")
         c1, c2 = st.columns(2)
