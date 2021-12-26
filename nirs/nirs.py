@@ -251,7 +251,7 @@ def main():
         c1, c2 = st.columns(2)
         c3, c4 = st.columns(2)
 
-        a = c1.number_input("Введите нижний предел (a):", value=-1.)
+        a = c1.number_input("Введите нижний предел (a):", value=0.)
         b = c2.number_input("Введите верхний предел (b):", value=1.)
         eps = c3.number_input("Введите эпсилон (ε):", min_value=.00000000001, value=1.0 * (10 ** - 8), format="%.8f")
         num_samples = int(
@@ -300,10 +300,10 @@ def main():
         st.markdown("---")
         c1, c2 = st.columns(2)
         c3, c4 = st.columns(2)
-        a1 = c1.number_input("Введите a1:", value=1.)
+        a1 = c1.number_input("Введите a1:", value=-1.)
         a2 = c3.number_input("Введите a2:", value=0.)
-        b1 = c2.number_input("Введите b1:", value=2.)
-        b2 = c4.number_input("Введите b2:", value=5.)
+        b1 = c2.number_input("Введите b1:", value=1.)
+        b2 = c4.number_input("Введите b2:", value=3.)
         n = st.slider("Выберите количество итераций (n):", min_value=1, max_value=100000, value=1000, step=1)
 
         st.write("Будем использовать функцию двух переменных:")
