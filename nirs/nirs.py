@@ -255,7 +255,7 @@ def main():
         b = c2.number_input("Введите верхний предел (b):", value=1.)
         eps = c3.number_input("Введите эпсилон (ε):", min_value=.00000000001, value=1.0 * (10 ** - 8), format="%.8f")
         num_samples = int(
-            c4.number_input("Введите количество примеров:", min_value=1, max_value=100000, value=1000, step=1))
+            c4.number_input("Введите количество точек:", min_value=1, max_value=100000, value=1000, step=1))
         n = st.slider("Выберите количество итераций (n):", min_value=1, max_value=num_samples, value=100, step=1)
 
         st.markdown("---")
