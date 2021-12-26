@@ -1,27 +1,11 @@
-import numpy as np
-import plotly.graph_objects as go
 import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.express as px
 
+from matplotlib.patches import Polygon
 
-def plot(x: np.array, t: np.array):
-    """ отрисовка графика """
-    st.markdown("---")
-
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=x,
-        y=t,
-        mode='lines',
-    ))
-
-    fig.update_layout(
-        title_text=f"График зависимости ____ от ____:",
-        xaxis_title="____",
-        yaxis_title="____",
-    )
-
-    st.write(fig)
-    st.markdown("---")
+np.random.seed(42)
 
 
 def equation_0(x):
@@ -44,19 +28,54 @@ def equation_3(x, y):
     return 4 + 2 * y + 2 * x + x * y + x ** 3 * y
 
 
+def equation_3_2(xa, ya, a, b, c, d):
+    x = (b - a) * xa + a
+    y = (d - c) * ya + c
+    return 4 + 2 * y + 2 * x + x * y + x ** 3 * y
+
+
 def equation_4(x, y):
     """f(x, y) = y²/x²"""
     return y ** 2 / x ** 2
+
+
+def equation_4_2(xa, ya, a, b, c, d):
+    x = (b - a) * xa + a
+    y = (d - c) * ya + c
+    return y ** 2 / x ** 2
+
+
+def equation_5(x, y):
+    """f(x, y) = sqrt(x * x + y * y) + 3 * cos(sqrt(x * x + y * y)) + 5"""
+    return np.sqrt(x * x + y * y) + 3 * np.cos(np.sqrt(x * x + y * y)) + 5
+
+
+def equation_5_2(xa, ya, a, b, c, d):
+    x = (b - a) * xa + a
+    y = (d - c) * ya + c
+    return np.sqrt(x * x + y * y) + 3 * np.cos(np.sqrt(x * x + y * y)) + 5
+
+
+def estimate_ab(a, b, eps):
+    if abs(a % np.pi) < eps:
+        a = int(a / np.pi) * np.pi
+    elif abs(a % np.e) < eps:
+        a = int(a / np.e) * np.e
+    if abs(b % np.pi) < eps:
+        b = int(b / np.pi) * np.pi
+    elif abs(b % np.e) < eps:
+        b = int(b / np.e) * np.e
+    return a, b
 
 
 def generate_random(a, b, num_samples):
     return np.random.uniform(a, b, num_samples)
 
 
-def calculate_average(list_, num_samples, func):
+def calculate_average(list_random_nums, num_samples, func):
     sum_ = 0
     for i in range(0, num_samples):
-        sum_ += func(list_[i])
+        sum_ += func(list_random_nums[i])
 
     return sum_ / num_samples
 
@@ -70,6 +89,7 @@ def calculate(a, b, num_samples, func):
 
 
 def calculate_integral(a, b, num_samples, num_iter, func):
+    """Калькуляция однократного интеграла"""
     avg_sum = 0
     areas = []
     for i in range(0, num_iter):
@@ -77,12 +97,88 @@ def calculate_integral(a, b, num_samples, num_iter, func):
         avg_sum += integral
         areas.append(integral)
     avg_integral = avg_sum / num_iter
-    st.markdown(f"""
-        Интеграл функции {func.__doc__} на интервале от {a} до {b} 
-        с использованием {num_samples} примеров и {num_iter} итераций равен: **{avg_integral}**
-    """)
 
-    return areas
+    return areas, avg_integral
+
+
+def plot_func(func, a, b, integral):
+    st.write(f"Геометрическая интерпретация для $a={a}$, $b={b}$:")
+    x = np.linspace(a, b)
+    y = func(x)
+
+    # график функции
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.set_ylabel("f(x)")
+    ax.set_xlabel("x")
+    ax.grid(True)
+    ax.axhline(y=0, color="k", linewidth=0.5)
+
+    ax.plot(x, y, "r", linewidth=1)
+
+    # заштрихованная область
+    ix = np.linspace(a, b)
+    iy = func(ix)
+    verts = [(a, 0), *zip(ix, iy), (b, 0)]
+    poly = Polygon(verts, facecolor="0.9", edgecolor="0.5")
+    ax.add_patch(poly)
+    ax.text(0.6 * (a + b), 0.3, r"$\int_a^b f(x)\mathrm{d}x = $" + f"{round(integral, 5)}",
+            horizontalalignment="center", fontsize=20)
+
+    st.pyplot(fig)
+
+    st.write(f"Если взять случайную точку $x_i$ между $a={a}$ и $b={b}$. "
+             r"Мы можем построить площадь прямоугольника, умножив $f(x_i)\cdot (b-a)$.")
+    # графики для каждой точки
+    x_rand = np.random.uniform(a, b, 9)
+    fig, ax = plt.subplots(3, 3, figsize=(10, 6))
+    for axs, x_i in zip(ax.reshape(-1), x_rand):
+        axs.plot(x, y, 'r', linewidth=1)
+        verts = [(a, 0), (a, func(x_i)), (b, func(x_i)), (b, 0)]
+        poly = Polygon(verts, facecolor='0.9', edgecolor='0.5')
+        axs.add_patch(poly)
+        axs.plot(x_i, func(x_i), marker='o', color='b')
+    st.pyplot(fig)  #
+
+
+def plot_histogram(areas):
+    fig = px.histogram(
+        areas,
+        opacity=0.85,
+        marginal="box",
+        title="Распределение рассчитанных интегралов(площадей)",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def estimate_error(func_2, a, b, c, d, num_iter):
+    fxy = 0
+    for i in range(num_iter):
+        x = np.random.rand()
+        y = np.random.rand()
+        fxy += func_2(x, y, a, b, c, d)
+    return fxy
+
+
+def calculate_integral_double(func_2, a, b, c, d, n):
+    """Калькуляция двойного интеграла"""
+    fxy = (estimate_error(func_2, a, b, c, d, n))
+
+    res = ((b - a) * (d - c) / n) * fxy
+    return res
+
+
+def plot_func_3d(func):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    x = y = np.arange(-3.0, 3.0, 0.05)
+    X, Y = np.meshgrid(x, y)
+    zs = np.array([func(x, y) for x, y in zip(np.ravel(X), np.ravel(Y))])
+    Z = zs.reshape(X.shape)
+    ax.plot_surface(X, Y, Z)
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    st.write(fig)
 
 
 def main():
@@ -119,74 +215,99 @@ def main():
     if show_schema:
         st.code(description)
 
-    st.markdown("---")
-    selected_fun = st.radio("Выберите функцию", (
-        f"0. {equation_0.__doc__}",
-        f"1. {equation_1.__doc__}",
-        f"2. {equation_2.__doc__}",
-        f"3. {equation_3.__doc__}",
-        f"4. {equation_4.__doc__}",
-    ))
-
-    function = ""
-    if selected_fun[:1] == "1":
-        function = equation_1
-    elif selected_fun[:1] == "2":
-        function = equation_2
-    elif selected_fun[:1] == "3":
-        function = equation_3
-    elif selected_fun[:1] == "4":
-        function = equation_4
-    elif selected_fun[:1] == "0":
-        function = equation_0
-
-    st.markdown("---")
-    c1, c2, c3 = st.columns(3)
-    c4, c5 = st.columns(2)
-    c6, c7 = st.columns(2)
-    a = c1.number_input("Введите нижний предел:", value=-1.)
-    b = c2.number_input("Введите верхний предел:", value=1.)
-    sub_intervals = c3.number_input("Введите шаг:", min_value=.00000000001, value=.01, format="%.8f")
-    precision = c4.number_input("Введите точность:", value=.1, format="%.8f")
-    epsilon = c5.number_input("Введите эпсилон (ε):", min_value=.00000000001, value=1.0 * (10 ** - 8), format="%.8f")
-    num_samples = c6.number_input("Введите количество примеров:", min_value=1, max_value=10, value=5, step=1)
-    num_iterations = c7.number_input("Введите количество итераций:", min_value=1, max_value=100000, value=1000, step=1)
-
-    st.markdown("---")
-    # calc_type = st.radio(
-    #     "Выберите тип вычисления", (
-    #         "1. Вычисление однократного интеграла",
-    #         "2. Вычисление двойного интеграла",
-    #     )
-    # )
-    # if calc_type[:1] == "1":
-    #     st.write(calc_type[3:])
-    #
-    # elif calc_type[:1] == "2":
-    #     st.write(calc_type[3:])
-
-    if abs(a % np.pi) < epsilon:
-        a = int(a / np.pi) * np.pi
-    elif abs(a % np.e) < epsilon:
-        a = int(a / np.e) * np.e
-    if abs(b % np.pi) < epsilon:
-        b = int(b / np.pi) * np.pi
-    elif abs(b % np.e) < epsilon:
-        b = int(b / np.e) * np.e
-
-    all_areas = calculate_integral(a, b, num_samples, num_iterations, function)
-
-    show_areas = st.checkbox("Показать подробные результаты вычислений")
-    if show_areas:
-        st.code(all_areas)
-
-    fig = px.histogram(
-        all_areas,
-        opacity=0.85,
-        marginal="box",
-        title="Распределение рассчитанных интегралов(площадей)",
+    calc_type = st.radio(
+        "Выберите тип вычисления", (
+            "1. Вычисление однократного интеграла",
+            "2. Вычисление двойного интеграла",
+        )
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    function = None
+    function_2 = None
+
+    if calc_type[:1] == "1":
+        selected_fun = st.radio("Выберите функцию", (
+            f"0. {equation_0.__doc__}",
+            f"1. {equation_1.__doc__}",
+            f"2. {equation_2.__doc__}",
+        ))
+
+        if selected_fun[:1] == "1":
+            function = equation_1
+        elif selected_fun[:1] == "2":
+            function = equation_2
+        elif selected_fun[:1] == "0":
+            function = equation_0
+
+        st.markdown("---")
+        c1, c2 = st.columns(2)
+        c3, c4 = st.columns(2)
+
+        a = c1.number_input("Введите нижний предел (a):", value=-1.)
+        b = c2.number_input("Введите верхний предел (b):", value=1.)
+        eps = c3.number_input("Введите эпсилон (ε):", min_value=.00000000001, value=1.0 * (10 ** - 8), format="%.8f")
+        num_samples = int(
+            c4.number_input("Введите количество примеров:", min_value=1, max_value=100000, value=1000, step=1))
+        n = st.slider("Выберите количество итераций (n):", min_value=1, max_value=num_samples, value=100, step=1)
+
+        st.markdown("---")
+
+        a, b = estimate_ab(a, b, eps)
+
+        all_areas, integral = calculate_integral(a, b, num_samples, n, function)
+
+        st.write("Основная идея состоит в том, чтобы эмпирически оценить определенный интеграл функции.")
+        st.write("Будем использовать функцию одной переменной:")
+        st.latex(f"{function.__doc__}")
+
+        st.markdown("---")
+        st.markdown(f"Интеграл функции равен: **{integral}**")
+        st.markdown("---")
+
+        plot_func(function, a, b, integral)
+
+        show_areas = st.checkbox("Показать все результаты вычислений")
+        if show_areas:
+            st.code(all_areas)
+
+        plot_histogram(all_areas)
+
+    elif calc_type[:1] == "2":
+        selected_fun = st.radio("Выберите функцию", (
+            f"1. {equation_3.__doc__}",
+            f"2. {equation_4.__doc__}",
+            f"3. {equation_5.__doc__}",
+        ))
+
+        if selected_fun[:1] == "1":
+            function = equation_3
+            function_2 = equation_3_2
+        elif selected_fun[:1] == "2":
+            function = equation_4
+            function_2 = equation_4_2
+        elif selected_fun[:1] == "3":
+            function = equation_5
+            function_2 = equation_5_2
+
+        st.markdown("---")
+        c1, c2 = st.columns(2)
+        c3, c4 = st.columns(2)
+        a1 = c1.number_input("Введите a1:", value=1.)
+        a2 = c3.number_input("Введите a2:", value=0.)
+        b1 = c2.number_input("Введите b1:", value=2.)
+        b2 = c4.number_input("Введите b2:", value=5.)
+        n = st.slider("Выберите количество итераций (n):", min_value=1, max_value=100000, value=1000, step=1)
+
+        st.write("Будем использовать функцию двух переменных:")
+        st.latex(f"{function.__doc__}")
+
+        integral_double = calculate_integral_double(function_2, a1, b1, a2, b2, n)
+
+        st.markdown("---")
+        st.markdown(f"Интеграл функции равен: **{integral_double}**")
+        st.markdown("---")
+
+        plot_func_3d(function)
 
 
 if __name__ == "__main__":
